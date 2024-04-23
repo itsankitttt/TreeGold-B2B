@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Orders</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Orders</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Phone Number</th>
+                <th>Email</th>
+                <th>Address</th>
+                <th>Business Description</th>
+                <th>Products</th>
+            </tr>
+        </thead>
+        <tbody id="ordersTableBody">
+            <!-- Order data will be inserted here -->
+        </tbody>
+    </table>
+
+    <script>
+        // Function to fetch orders data from the server
+        async function fetchOrders() {
+            try {
+                // Fetch data from the API endpoint
+                const response = await fetch('http://localhost:8000/api/orders');
+                const orders = await response.json();
+
+                // Populate the table with order data
+                populateOrdersTable(orders);
+            } catch (error) {
+                console.error('Error fetching orders:', error);
+            }
+        }
+
+        // Function to populate the table with order data
+        function populateOrdersTable(orders) {
+            const tableBody = document.getElementById('ordersTableBody');
+
+            // Clear existing rows
+            tableBody.innerHTML = '';
+
+            // Populate the table with order data
+            orders.forEach(order => {
+                // Create a new table row
+                const row = document.createElement('tr');
+
+                // Fill the row with order data
+                row.innerHTML = `
+                    <td>${order.name}</td>
+                    <td>${order.phoneNo}</td>
+                    <td>${order.email}</td>
+                    <td>${order.address}</td>
+                    <td>${order.businessDescription}</td>
+                    <td>${order.products.join(', ')}</td>
+                `;
+
+                // Append the row to the table body
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Fetch orders when the page loads
+        window.addEventListener('load', fetchOrders);
+    </script>
+</body>
+</html>

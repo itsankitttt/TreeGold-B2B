@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Product Order Form</title>
+</head>
+
+<body>
+    <h1>Order Form</h1>
+    <form id="orderForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="phoneNo">Phone Number:</label>
+        <input type="text" id="phoneNo" name="phoneNo" required><br><br>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br><br>
+
+        <label for="address">Address:</label>
+        <textarea id="address" name="address" required></textarea><br><br>
+
+        <label for="businessDescription">Business Description:</label>
+        <textarea id="businessDescription" name="businessDescription"></textarea><br><br>
+
+        <label for="productCategory">Product Category:</label>
+        <select id="productCategory" name="productCategory" onchange="updateProducts()">
+            <option value="">-- Select Category --</option>
+            <option value="sauces">Sauces</option>
+            <option value="pickles">Pickles</option>
+            <option value="jams">Jams</option>
+            <option value="vinegar">Vinegar</option>
+        </select><br><br>
+
+        <div id="products"></div> <!-- Products checkboxes will be dynamically generated here -->
+
+        <button type="submit">Submit Order</button>
+    </form>
+
+    <script>
+        // Define the types of products for each category
+        const productTypes = {
+            sauces: ['Ketchup', 'Barbecue Sauce', 'Soy Sauce', 'Hot Sauce'],
+            pickles: ['Cucumber Pickles', 'Onion Pickles', 'Mixed Pickles'],
+            jams: ['Strawberry Jam', 'Raspberry Jam', 'Apricot Jam'],
+            vinegar: ['Apple Cider Vinegar', 'White Vinegar', 'Balsamic Vinegar']
+        };
+
+        // State object to keep track of selected products in each category
+        const selectedProducts = {
+            sauces: [],
+            pickles: [],
+            jams: [],
+            vinegar: []
+        };
+
+        // Function to update product checkboxes based on the selected category
+        function updateProducts() {
+            const category = document.getElementById('productCategory').value;
+            const productsDiv = document.getElementById('products');
+
+            // Clear existing checkboxes
+            productsDiv.innerHTML = '';
+
+            // Create checkboxes for the selected category
+            if (category && productTypes[category]) {
+                productTypes[category].forEach(product => {
+                    // Create a checkbox element
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.name = 'products';
+                    checkbox.value = product;
+
+                    // Set the checkbox as checked if it is in the selected products state
+                    if (selectedProducts[category].includes(product)) {
+                        checkbox.checked = true;
+                    }
+
+                    // Add an event listener to update the selected products state when the checkbox is checked or unchecked
+                    checkbox.addEventListener('change', () => {
+                        if (checkbox.checked) {
+                            // Add the product to the selected products state for the current category
+                            selectedProducts[category].push(product);
+                        } else {
+                            // Remove the product from the selected products state for the current category
+                            selectedProducts[category] = selectedProducts[category].filter(item => item !== product);
+                        }
+                    });
+
+                    // Create a label for the checkbox
+                    const label = document.createElement('label');
+                    label.appendChild(checkbox);
+                    label.appendChild(document.createTextNode(product));
+
+                    // Append the checkbox and label to the products div
+                    productsDiv.appendChild(label);
+                    productsDiv.appendChild(document.createElement('br'));
+                });
+            }
+        }
+
+        // Handle form submission
+        document.getElementById('orderForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            // Collect form data
+            const formData = new FormData(event.target);
+            const orderData = {
+                name: formData.get('name'),
+                phoneNo: formData.get('phoneNo'),
+                email: formData.get('email'),
+                address: formData.get('address'),
+                businessDescription: formData.get('businessDescription'),
+                products: []
+            };
+
+            // Collect selected products from the state object
+            for (const category in selectedProducts) {
+                if (selectedProducts.hasOwnProperty(category)) {
+                    orderData.products.push(...selectedProducts[category]);
+                }
+            }
+
+            try {
+                // Send POST request to the server
+                const response = await fetch('http://localhost:8000/submit-order', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(orderData),
+                });
+
+                if (response.ok) {
+                    alert('Order submitted successfully!');
+                } else {
+                    alert('Error submitting order');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error submitting order');
+            }
+        });
+    </script>
+</body>
+
+</html>
