@@ -5,6 +5,8 @@ const cors = require('cors');
 const path = require('path');
 
 const app = express();
+const PORT = process.env.PORT || 8000; // Use the provided port or default to 8000
+
 app.use(bodyParser.json());
 app.use(cors());
 
@@ -70,6 +72,6 @@ app.get('/api/orders', async (req, res) => {
 });
 
 // Start the server
-app.listen(8000, () => {
+app.listen({PORT}, () => {
     console.log("Server started on port 8000");
 });
