@@ -23,6 +23,7 @@ const orderSchema = new mongoose.Schema({
     phoneNo: String,
     email: String,
     address: String,
+    quantity: String,
     businessDescription: String,
     products: [String],
 });
@@ -53,13 +54,10 @@ app.post('/submit-order', async (req, res) => {
 // Render the orders page with all submitted orders
 // Render the orders page with all submitted orders
 // Render the orders page with all submitted orders
-// Render the orders page with all submitted orders
 app.get('/orders', (req, res) => {
-    const filePath = path.join(__dirname, 'public', 'orders.html');
+    const filePath = path.join(__dirname,"public", 'orders.html');
     res.sendFile(filePath);
 });
-
-
 
 // New endpoint to serve orders data as JSON
 app.get('/api/orders', async (req, res) => {
