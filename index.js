@@ -72,6 +72,6 @@ app.get('/api/orders', async (req, res) => {
 });
 
 // Start the server
-app.listen({PORT}, () => {
+app.listen(PORT, () => {
     console.log("Server started on port 8000");
 });
