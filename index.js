@@ -53,10 +53,12 @@ app.post('/submit-order', async (req, res) => {
 // Render the orders page with all submitted orders
 // Render the orders page with all submitted orders
 // Render the orders page with all submitted orders
+// Render the orders page with all submitted orders
 app.get('/orders', (req, res) => {
-    const filePath = path.join(__dirname,"public", 'orders.html');
+    const filePath = path.join(__dirname, 'public', 'orders.html');
     res.sendFile(filePath);
 });
+
 
 
 // New endpoint to serve orders data as JSON
