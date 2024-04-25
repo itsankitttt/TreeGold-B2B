@@ -42,7 +42,7 @@
         async function fetchOrders() {
             try {
                 // Fetch data from the API endpoint
-                const response = await fetch('http://localhost:8000/api/orders');
+                const response = await fetch('/api/orders');
                 const orders = await response.json();
 
                 // Populate the table with order data
